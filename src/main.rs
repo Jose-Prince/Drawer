@@ -25,4 +25,5 @@ fn main() {
     if let Err(e) = fb.save_as_bmp("out.bmp") {
         eprintln!("Failed to write BMP file: {}", e);
     }
+    
 }
