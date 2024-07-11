@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Clone, Copy)]
 pub struct Color {
     r: u8,
     g: u8,
@@ -7,7 +8,7 @@ pub struct Color {
 }
 
 impl Color {
-    pub fn new(r: i32, g: i32, b: i32) -> Color {
+    pub fn new(r: i32, g: i32, b: i32) -> Self {
         Color {
             r: r.clamp(0, 255) as u8,
             g: g.clamp(0, 255) as u8,

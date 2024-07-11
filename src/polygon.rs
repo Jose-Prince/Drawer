@@ -1,17 +1,23 @@
 use crate::framebuffer::Framebuffer;
 use crate::line::Line;
+use crate::color::Color;
 use nalgebra_glm as glm;
 
 pub trait Polygon {
-    fn polygon(&mut self, arr: &Vec<[isize; 2]>);
+    fn polygon(&mut self, arr: &Vec<[isize; 2]>, border_color: Color, fill_color: Color);
 }
 
 impl Polygon for Framebuffer {
-    fn polygon(&mut self, arr: &Vec<[isize; 2]>) {
+    fn polygon(&mut self, arr: &Vec<[isize; 2]>, border_color: Color, fill_color: Color) {
         if arr.len() < 2 {
             return; // No se puede formar un polígono con menos de 2 puntos
         }
 
+        // Rellenar el polígono
+        self.fill_polygon(arr, fill_color);
+
+        // Establecer el color del borde y dibujar las líneas del polígono
+        self.set_current_color(border_color);
         for i in 0..arr.len() {
             let first_pos = arr[i];
             let last_pos = if i < arr.len() - 1 {
