@@ -1,15 +1,16 @@
 use crate::framebuffer::Framebuffer;
+use nalgebra_glm as glm; // Asumiendo que nalgebra-glm está correctamente importado y configurado
 
 pub trait Line {
-    fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64);
+    fn line(&mut self, vertex1: glm::TVec3<f64>, vertex2: glm::TVec3<f64>);
 }
 
 impl Line for Framebuffer {
-    fn line(&mut self, x1: f64, y1: f64, x2: f64, y2: f64) {
-        let x1 = x1.round() as isize;
-        let y1 = y1.round() as isize;
-        let x2 = x2.round() as isize;
-        let y2 = y2.round() as isize;
+    fn line(&mut self, vertex1: glm::TVec3<f64>, vertex2: glm::TVec3<f64>) {
+        let x1 = vertex1.x.round() as isize;
+        let y1 = vertex1.y.round() as isize;
+        let x2 = vertex2.x.round() as isize;
+        let y2 = vertex2.y.round() as isize;
 
         let mut x = x1;
         let mut y = y1;
@@ -44,5 +45,3 @@ impl Line for Framebuffer {
         }
     }
 }
-
-

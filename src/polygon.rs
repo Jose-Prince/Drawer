@@ -1,5 +1,6 @@
 use crate::framebuffer::Framebuffer;
 use crate::line::Line;
+use nalgebra_glm as glm;
 
 pub trait Polygon {
     fn polygon(&mut self, arr: &Vec<[isize; 2]>);
@@ -19,13 +20,11 @@ impl Polygon for Framebuffer {
                 arr[0]
             };
 
-            // Convertimos los valores a f64 antes de pasarlos a `line`
-            let x0 = first_pos[0] as f64;
-            let y0 = first_pos[1] as f64;
-            let x1 = last_pos[0] as f64;
-            let y1 = last_pos[1] as f64;
+            // Convertimos los valores a f64 y creamos glm::TVec3<f64>
+            let vertex1 = glm::vec3(first_pos[0] as f64, first_pos[1] as f64, 0.0);
+            let vertex2 = glm::vec3(last_pos[0] as f64, last_pos[1] as f64, 0.0);
 
-            self.line(x0, y0, x1, y1);
+            self.line(vertex1, vertex2);
         }
     }
 }
