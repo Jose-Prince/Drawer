@@ -25,6 +25,10 @@ impl Framebuffer {
         }
     }
 
+    pub fn get_buffer(&self) -> &[u32] {
+        &self.buffer
+    }
+
     pub fn clear(&mut self) {
         let color_hex = self.background_color.to_hex();
         self.buffer.fill(color_hex);

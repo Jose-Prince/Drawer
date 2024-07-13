@@ -8,12 +8,29 @@ use framebuffer::Framebuffer;
 use color::Color;
 use line::Line;
 use polygon::Polygon;
-use nalgebra_glm as glm;
+use minifb::{Window, WindowOptions};
+use std::time::Duration;
 
 fn main() {
-    let width = 800;
-    let height = 800;
-    let mut fb = Framebuffer::new(width, height);
+    let window_width = 800;
+    let window_height = 600;
+
+    let close_delay = Duration::from_secs(10);
+
+    let mut fb = Framebuffer::new(window_width, window_height);
+
+    let mut window = match Window::new(
+        "Rust Graphics - Framebuffer Example",
+        window_width,
+        window_height,
+        WindowOptions::default(),
+    ) {
+        Ok(window) => window,
+        Err(e) => {
+            eprintln!("Failed to create window: {}", e);
+            return;
+        }
+    };
 
     let points: Vec<[isize; 2]> = vec![
         [100, 100],
@@ -27,9 +44,12 @@ fn main() {
     
     fb.polygon(&points, border_color, fill_color);
 
-    // Save the framebuffer to a BMP file
-    if let Err(e) = fb.save_as_bmp("vertex.bmp") {
-        eprintln!("Failed to write BMP file: {}", e);
-    }
+    window.update_with_buffer(&fb.get_buffer(), window_width, window_height).unwrap();
 
+    std::thread::sleep(close_delay);
+
+    // Save the framebuffer to a BMP file
+    // if let Err(e) = fb.save_as_bmp("polygon.bmp") {
+    //     eprintln!("Failed to write BMP file: {}", e);
+    // }
 }
