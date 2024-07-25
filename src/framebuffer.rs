@@ -25,6 +25,14 @@ impl Framebuffer {
         }
     }
 
+    pub fn get_width(&self) -> usize {
+        self.width
+    }
+
+    pub fn get_height(&self) -> usize {
+        self.height
+    }
+
     pub fn get_buffer(&self) -> &[u32] {
         &self.buffer
     }
@@ -62,7 +70,6 @@ impl Framebuffer {
         write_bmp_file(file_path, &self.buffer, self.width, self.height)
     }
 
-    // Método para rellenar polígonos usando el algoritmo de Scanline
     pub fn fill_polygon(&mut self, vertices: &Vec<[isize; 2]>, fill_color: Color) {
         let min_y = vertices.iter().map(|v| v[1]).min().unwrap_or(0);
         let max_y = vertices.iter().map(|v| v[1]).max().unwrap_or(0);

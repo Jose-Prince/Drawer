@@ -26,7 +26,7 @@ fn write_bmp_header(
     width: usize,
     height: usize,
 ) -> Result<()> {
-    let file_size = (BMP_HEADER_SIZE + (width * height * 3) + (height * ((4 - (width * 3) % 4) % 4))) as u32;
+    let file_size = (BMP_HEADER_SIZE + (width * height * 4)) as u32;
     let reserved: u32 = 0;
     let offset: u32 = BMP_PIXEL_OFFSET as u32;
 
@@ -39,9 +39,9 @@ fn write_bmp_header(
     // DIB header
     let header_size: u32 = 40;
     let planes: u16 = 1;
-    let bpp: u16 = 24; // 24 bits per pixel
+    let bpp: u16 = BMP_BITS_PER_PIXEL as u16;
     let compression: u32 = 0;
-    let image_size: u32 = (width * height * 3) as u32;
+    let image_size: u32 = (width * height * 4) as u32;
     let ppm: u32 = 2835; // 72 DPI
 
     writer.write_all(&header_size.to_le_bytes())?;
@@ -65,19 +65,14 @@ fn write_pixel_data(
     width: usize,
     height: usize,
 ) -> Result<()> {
-    let padding = (4 - (width * 3) % 4) % 4;
-    let padding_data = vec![0u8; padding];
-
     for y in (0..height).rev() {
         for x in 0..width {
             let pixel = buffer[y * width + x];
             let b = (pixel & 0xFF) as u8;
             let g = ((pixel >> 8) & 0xFF) as u8;
             let r = ((pixel >> 16) & 0xFF) as u8;
-            writer.write_all(&[b, g, r])?;
-        }
-        if padding > 0 {
-            writer.write_all(&padding_data)?;
+            let a = ((pixel >> 24) & 0xFF) as u8;
+            writer.write_all(&[b, g, r, a])?;
         }
     }
     Ok(())
