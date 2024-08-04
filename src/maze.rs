@@ -23,19 +23,7 @@ fn draw_cell(framebuffer: &mut Framebuffer, x0: usize, y0: usize, block_size: us
     }
 }
 
-fn draw_player(framebuffer: &mut Framebuffer, player: &Player, block_size: usize) {
-    let half_size = block_size / 4; // Tamaño del jugador
-
-    framebuffer.set_current_color(Color::new(0, 255, 0)); // Color del jugador
-
-    for y in -(half_size as isize)..=(half_size as isize) {
-        for x in -(half_size as isize)..=(half_size as isize) {
-            framebuffer.point((player.pos.x as isize + x), (player.pos.y as isize + y));
-        }
-    }
-}
-
-pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<()> {
+pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<Vec<Vec<char>>> {
     let maze = load_maze(file_path)?;
     let rows = maze.len();
     let cols = maze[0].len();
@@ -53,14 +41,5 @@ pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<()> {
         }
     }
 
-    let player = Player::new(player_pos.x, player_pos.y, 0.0);
-
-    // Dibujar al jugador
-    draw_player(framebuffer, &player, block_size);
-
-    // Llamar a cast_ray con un único ángulo
-    let angle = 45.0_f32.to_radians(); // Por ejemplo, 45 grados convertido a radianes
-    cast_ray(framebuffer, &maze, &player, angle, block_size);
-
-    Ok(())
+    Ok(maze)
 }
