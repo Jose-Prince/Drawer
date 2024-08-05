@@ -39,10 +39,13 @@ fn main() {
         framebuffer.clear();
         render(&mut framebuffer, file_path).unwrap();
         player.draw(&mut framebuffer);
-
-        // Llamar a cast_ray con el ángulo actual del jugador
-        let angle = player.a;
-        cast_ray::cast_ray(&mut framebuffer, &maze, &player, angle, block_size);
+        
+        let num_rays = 5;
+        for i in 0..num_rays {
+            let current_ray = i as f32 / num_rays as f32;
+            let angle = player.a - ((PI/8.0) / 2.0) + ((PI/8.0) * current_ray);
+            cast_ray::cast_ray(&mut framebuffer, &maze, &player, angle, block_size);
+        }
 
         window.update_with_buffer(&framebuffer.get_buffer(), width, height).unwrap();
         std::thread::sleep(Duration::from_millis(16));
