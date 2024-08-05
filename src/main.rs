@@ -12,6 +12,7 @@ use player::Player;
 use maze::render;
 use minifb::{Window, WindowOptions, Key};
 use std::time::Duration;
+use std::f32::consts::PI;
 
 fn main() {
     let width = 1000;
@@ -38,7 +39,9 @@ fn main() {
         framebuffer.clear();
         render(&mut framebuffer, file_path).unwrap();
         player.draw(&mut framebuffer);
-        let angle = 45.0_f32.to_radians();
+
+        // Llamar a cast_ray con el ángulo actual del jugador
+        let angle = player.a;
         cast_ray::cast_ray(&mut framebuffer, &maze, &player, angle, block_size);
 
         window.update_with_buffer(&framebuffer.get_buffer(), width, height).unwrap();

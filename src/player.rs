@@ -3,7 +3,7 @@ use minifb::{Window, Key};
 use std::f32::consts::PI;
 use crate::framebuffer::Framebuffer;
 use crate::color::Color;
-use crate::maze::is_wall;  // Añadir importación para la función is_wall
+use crate::maze::is_wall;
 
 pub struct Player {
     pub pos: Vec2,
