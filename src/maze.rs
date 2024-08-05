@@ -43,3 +43,11 @@ pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<Vec<Vec<
 
     Ok(maze)
 }
+
+pub fn is_wall(maze: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
+    if y < maze.len() && x < maze[0].len() {
+        maze[y][x] == '+' || maze[y][x] == '|' || maze[y][x] == '-'
+    } else {
+        false
+    }
+}

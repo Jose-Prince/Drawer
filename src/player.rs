@@ -3,6 +3,7 @@ use minifb::{Window, Key};
 use std::f32::consts::PI;
 use crate::framebuffer::Framebuffer;
 use crate::color::Color;
+use crate::maze::is_wall;  // Añadir importación para la función is_wall
 
 pub struct Player {
     pub pos: Vec2,
@@ -17,9 +18,12 @@ impl Player {
         }
     }
 
-    pub fn process_events(&mut self, window: &Window) {
+    pub fn process_events(&mut self, window: &Window, maze: &Vec<Vec<char>>, block_size: usize) {
         const MOVE_SPEED: f32 = 10.0;
         const ROTATION_SPEED: f32 = PI / 10.0;
+
+        let cos_a = self.a.cos();
+        let sin_a = self.a.sin();
 
         if window.is_key_down(Key::Left) {
             self.a -= ROTATION_SPEED;
@@ -28,12 +32,22 @@ impl Player {
             self.a += ROTATION_SPEED;
         }
         if window.is_key_down(Key::Up) {
-            self.pos.x += self.a.cos() * MOVE_SPEED;
-            self.pos.y += self.a.sin() * MOVE_SPEED;
+            let new_x = self.pos.x + cos_a * MOVE_SPEED;
+            let new_y = self.pos.y + sin_a * MOVE_SPEED;
+
+            if !is_wall(maze, (new_x / block_size as f32) as usize, (new_y / block_size as f32) as usize) {
+                self.pos.x = new_x;
+                self.pos.y = new_y;
+            }
         }
         if window.is_key_down(Key::Down) {
-            self.pos.x -= self.a.cos() * MOVE_SPEED;
-            self.pos.y -= self.a.sin() * MOVE_SPEED;
+            let new_x = self.pos.x - cos_a * MOVE_SPEED;
+            let new_y = self.pos.y - sin_a * MOVE_SPEED;
+
+            if !is_wall(maze, (new_x / block_size as f32) as usize, (new_y / block_size as f32) as usize) {
+                self.pos.x = new_x;
+                self.pos.y = new_y;
+            }
         }
     }
 
