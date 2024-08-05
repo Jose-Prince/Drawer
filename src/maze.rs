@@ -23,8 +23,8 @@ fn draw_cell(framebuffer: &mut Framebuffer, x0: usize, y0: usize, block_size: us
     }
 }
 
-pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<Vec<Vec<char>>> {
-    let maze = load_maze(file_path)?;
+pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Vec<Vec<char>> {
+    let maze = load_maze(file_path);
     let rows = maze.len();
     let cols = maze[0].len();
 
@@ -41,8 +41,41 @@ pub fn render(framebuffer: &mut Framebuffer, file_path: &str) -> Result<Vec<Vec<
         }
     }
 
-    Ok(maze)
+    maze
 }
+
+pub fn render3d(framebuffer: &mut Framebuffer, player: &Player, file_path: &str) {
+    let maze = load_maze(file_path); // Asegúrate de manejar errores adecuadamente
+    let block_size = 100;
+    let num_rays = framebuffer.get_width();
+    
+    let hw = framebuffer.get_width() as f32 / 2.0; // Half width
+    let hh = framebuffer.get_height() as f32 / 2.0; // Half height
+    
+    framebuffer.set_current_color(Color::new(255, 255, 255));
+    
+    for i in 0..num_rays {
+        let current_ray = i as f32 / num_rays as f32; // Ray proportion
+        let angle = player.a - (player.fov / 2.0) + (player.fov * current_ray);
+        let intersect = cast_ray(framebuffer, &maze, &player, angle, block_size, false);
+        
+        // Calculate the height of the stake
+        let distance_to_wall = intersect.distance; // Distance to wall
+        let distance_to_projection_plane = (hw / (distance_to_wall + 0.1)).max(0.0); // Prevent division by zero
+        let stake_height = (hh / distance_to_projection_plane).min(hh); // Adjust stake height
+        
+        // Calculate stake top and bottom
+        let stake_top = (hh - (stake_height / 2.0)) as usize;
+        let stake_bottom = (hh + (stake_height / 2.0)) as usize;
+        
+        // Draw the stake
+        framebuffer.set_current_color(Color::new(255, 255, 255)); // White color for the stake
+        for y in stake_top..stake_bottom {
+            framebuffer.point(i as isize, y as isize);
+        }
+    }
+}
+
 
 pub fn is_wall(maze: &Vec<Vec<char>>, x: usize, y: usize) -> bool {
     if y < maze.len() && x < maze[0].len() {

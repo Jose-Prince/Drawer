@@ -1,20 +1,22 @@
 use nalgebra_glm::Vec2;
 use minifb::{Window, Key};
 use std::f32::consts::PI;
-use crate::framebuffer::Framebuffer;
-use crate::color::Color;
 use crate::maze::is_wall;
+use crate::Framebuffer;
+use crate::Color;
 
 pub struct Player {
     pub pos: Vec2,
     pub a: f32,
+    pub fov: f32, // Campo de visión
 }
 
 impl Player {
-    pub fn new(x: f32, y: f32, a: f32) -> Self {
+    pub fn new(x: f32, y: f32, a: f32, fov: f32) -> Self {
         Player {
             pos: Vec2::new(x, y),
             a,
+            fov,
         }
     }
 
